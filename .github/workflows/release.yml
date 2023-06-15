@@ -1,0 +1,50 @@
+name: Build and Release
+on:
+  push:
+    tags:
+      - '*'
+permissions:
+  contents: write
+  actions: write
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Build
+      run: cargo install datafusion-cli
+
+    - name: Get version
+      id: get_version
+      run: echo "::set-output name=VERSION::$(~/.cargo/bin/datafusion-cli --version)"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ~/.cargo/bin/datafusion-cli
+        asset_name: datafusion-cli
+        asset_content_type: application/octet-stream
