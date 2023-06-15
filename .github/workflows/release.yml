@@ -17,7 +17,7 @@ jobs:
     - name: Install Rust
       run: |
         curl https://sh.rustup.rs -sSf | sh -s -- -y
-        source $HOME/.cargo/env
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
     - name: Build
       run: cargo install datafusion-cli
