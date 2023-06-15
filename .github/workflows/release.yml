@@ -8,15 +8,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    container: 
+      image: almalinux:8.7
+      
     steps:
     - uses: actions/checkout@v2
 
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
+      run: |
+        curl https://sh.rustup.rs -sSf | sh -s -- -y
+        source $HOME/.cargo/env
 
     - name: Build
       run: cargo install datafusion-cli
