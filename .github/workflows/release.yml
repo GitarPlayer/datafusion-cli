@@ -1,8 +1,6 @@
 name: Build and Release
 on:
   push:
-    tags:
-      - '*'
 permissions:
   contents: write
   actions: write
