@@ -18,6 +18,10 @@ jobs:
       run: |
         curl https://sh.rustup.rs -sSf | sh -s -- -y
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        
+    - name: Install dependencies
+      run: |
+        yum install -y gcc make openssl-devel
 
     - name: Build
       run: cargo install datafusion-cli
